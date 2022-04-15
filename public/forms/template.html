@@ -1,0 +1,46 @@
+<div data---="miniform__common.form__if:~PATH~;icon:fas fa-envelope;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:400" class="hidden" data-scope="~PATH~">
+	<div>
+		<div class="padding bg-smoke">
+			<div data---="input__?.name__required:1">@(Name)</div>
+			<div class="help m">@(3rd party apps will send email messages according to the template name. We recommend keeping simple terms.)</div>
+			<div data---="input__?.subject__">@(Subject)</div>
+			<div class="help m">@(Optional, a subject for mail message. It can contain templating markup in the form <code>{{ name }}</code>.)</div>
+		</div>
+		<div class="padding">
+			<div class="row">
+				<div class="col-md-6 m">
+					<div data---="input__?.reference__null__''">@(Reference)</div>
+				</div>
+				<div class="col-md-6 m">
+					<div data---="input__?.icon__type:icon__'fas fa-envelope'">@(Icon)</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav data---="validation__?">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = GET('?');
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update mail template)' : '@(Add mail template)' });
+		};
+
+		exports.submit = function(hide) {
+			var model = GET('? @reset');
+			WAPI('templates_save', model, ASETTER('message/response', function() {
+				EXEC('pagetemplates/refresh');
+				hide();
+			}));
+		};
+
+	});
+
+</script>

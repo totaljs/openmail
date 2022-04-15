@@ -1,0 +1,105 @@
+<div data---="largeform__common.form__if:~PATH~;icon:fas fa-laptop-code;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:600" class="hidden" data-scope="~PATH~">
+	<div>
+		<div class="padding">
+			<div data---="input__?.name__required:1" class="m">@(Name)</div>
+			<div class="row">
+				<div class="col-md-4 m">
+					<div data---="input__?.reference__null__''">@(Reference)</div>
+				</div>
+				<div class="col-md-4 m">
+					<div data---="input__?.color__type:color__'#4285F4'">@(Color)</div>
+				</div>
+				<div class="col-md-4 m">
+					<div data---="input__?.icon__type:icon__'fas fa-envelope'">@(Icon)</div>
+				</div>
+			</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<div class="caption m">
+				<div class="toolbar">
+					<button class="exec" data-exec="?/test"><i class="fas fa-check green"></i>@(Test)</button>
+				</div>
+				<label>@(SMTP server)</label>
+			</div>
+			<div data---="input__?.smtp__required:1__'localhost'" class="m">@(Hostname)</div>
+			<div data---="codemirror__?.smtp_options__height:200;linenumbers:false;type:javascript__'{}'">@(SMTP options)</div>
+			<div class="help m">@(Follow Total.js SMTP options)</div>
+
+			<div class="row">
+				<div class="col-md-4 m">
+					<div data---="input__?.from__type:email;required:1__'@'">@(From)</div>
+				</div>
+				<div class="col-md-4 m">
+					<div data---="input__?.reply__type:email__''">@(Reply to)</div>
+				</div>
+				<div class="col-md-4 m">
+					<div data---="input__?.bcc__type:email__''">@(BCC)</div>
+				</div>
+			</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<div data---="codemirror__?.helpers__height:200;linenumbers:false;type:javascript__'{\n\tdateformat: val => val.format(\'yyyy-MM-dd\')\n}'">@(Tangular helpers)</div>
+			<div class="help m">@(A custom Tangular template engine helpers)</div>
+		</div>
+	</div>
+	<nav data---="validation__?">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = GET('?');
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update Mail profile)' : '@(Create Mail profile)' });
+		};
+
+		exports.test = function() {
+			var model = GET('?');
+			var tmp = model.smtp_options;
+			if (tmp) {
+				try {
+					tmp = new Function('return ' + tmp)();
+					model.smtp_options = JSON.stringify(tmp);
+				} catch (e) {
+					SETTER('message/warning', 'SMTP options: ' + e.message);
+					return;
+				}
+			}
+			WAPI('smtp @showloading', { smtp: model.smtp, smtp_options: model.smtp_options }, ASETTER('message/response @hideloading', '@(SMTP server is configured correctly)'));
+		};
+
+		exports.submit = function(hide) {
+
+			var model = GET('? @reset');
+			var tmp = model.smtp_options;
+			if (tmp) {
+				try {
+					tmp = new Function('return ' + tmp)();
+					model.smtp_options = JSON.stringify(tmp, null, '\t');
+				} catch (e) {
+					SETTER('message/warning', 'SMTP options: ' + e.message);
+					return;
+				}
+			}
+
+			WAPI('profiles_save @showloading', model, ASETTER('message/response @hideloading', function(response) {
+
+				NAV.refresh();
+
+				if (!model.id)
+					setTimeout(AEXEC('pageprofiles/html', response.value), 1000);
+
+				hide();
+			}));
+		};
+
+	});
+
+</script>

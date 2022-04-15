@@ -1,0 +1,26 @@
+<div data-scope="preview">
+	<div class="padding">
+		<div data---="iframepreview__?.html"></div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('preview', function(exports) {
+		exports.render = function(html, model, layout) {
+			try {
+
+				var template = Tangular.compile(html);
+				var html = template(model);
+
+				if (layout) {
+					template = Tangular.compile(layout);
+					model.body = html;
+					html = template(model);
+				}
+
+				SET('?.html', html);
+
+			} catch (e) {}
+		};
+	});
+</script>
