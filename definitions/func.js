@@ -218,8 +218,6 @@ FUNC.send = function(model, files, callback, user) {
 			var id = Date.now().toString(36) + GUID(2);
 			model.attachments.wait(function(item, next, index) {
 
-				console.log(item);
-
 				if (!item.url || !item.name) {
 					next();
 					return;
