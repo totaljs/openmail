@@ -24,6 +24,7 @@ exports.install = function() {
 	ROUTE('API    @setup    +templates_save                       *Templates       --> save');
 	ROUTE('API    @setup    -templates_remove/{profileid}/{id}    *Templates       --> remove');
 	ROUTE('API    @setup    +templates_test                       *Templates/Test  --> test');
+	ROUTE('API    @setup    -templates_clone/{profileid}/{id}     *Templates       --> clone');
 
 	ROUTE('API    @setup    -config_read/{id}                     *Config          --> read');
 	ROUTE('API    @setup    +config_save                          *Config          --> save');

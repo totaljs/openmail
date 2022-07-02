@@ -88,6 +88,31 @@ NEWSCHEMA('Templates', function(schema) {
 		$.success(model.id);
 	});
 
+	schema.addWorkflow('clone', function($) {
+
+		var profile = MAIN.db.profiles[$.params.profileid];
+		if (!profile) {
+			$.invalid(404);
+			return;
+		}
+
+		var template = profile.templates[$.params.id];
+		if (template) {
+			template = CLONE(template);
+			template.id = UID();
+			template.name += ' (CLONED)';
+			template.reference += '_cloned';
+			template.dtcreated = NOW;
+			template.dtupdated = NOW;
+			profile.templates[template.id] = template;
+			FUNC.refresh();
+			MAIN.db.save();
+			$.success();
+		} else
+			$.invalid(404);
+
+	});
+
 	schema.setRemove(function($) {
 		var item = MAIN.db.profiles[$.params.profileid];
 		if (item) {
@@ -125,12 +150,22 @@ NEWSCHEMA('Templates/Test', function(schema) {
 
 						var obj = {};
 						var helpers = {};
+						var model2 = {};
 
 						if (profile.helpers) {
 							try {
 								helpers = new Function('return ' + profile.helpers)();
 							} catch (e) {
 								$.invalid('Invalid helpers: ' + e.message);
+								return;
+							}
+						}
+
+						if (profile.model) {
+							try {
+								model2 = new Function('return ' + profile.model)();
+							} catch (e) {
+								$.invalid('Invalid secondary model: ' + e.message);
 								return;
 							}
 						}
@@ -144,13 +179,13 @@ NEWSCHEMA('Templates/Test', function(schema) {
 							}
 						}
 
-						var html = ttemplate(obj, null, helpers);
+						var html = ttemplate(obj, model2, helpers);
 						obj.body = html;
-						html = tlayout(obj, null, helpers);
+						html = tlayout(obj, model2, helpers);
 
 						var subject = template.subject || template.name;
 						if (subject.indexOf('{{') !== -1)
-							subject = Tangular.compile()(obj, null, helpers);
+							subject = Tangular.compile()(obj, model2, helpers);
 
 						var message = Mail.create('[TEST] ' + subject, html);
 

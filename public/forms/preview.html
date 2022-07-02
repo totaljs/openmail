@@ -10,17 +10,20 @@
 			try {
 
 				var template = Tangular.compile(html);
-				var html = template(model);
+				var islayout = layout && layout.layout;
+				var html = islayout ? template(model, layout.model, layout.helpers) : template(model);
 
-				if (layout) {
-					template = Tangular.compile(layout);
+				if (islayout) {
+					template = Tangular.compile(layout.layout);
 					model.body = html;
-					html = template(model);
+					html = template(model, layout.model, layout.helpers);
 				}
 
 				SET('?.html', html);
 
-			} catch (e) {}
+			} catch (e) {
+				console.log(e);
+			}
 		};
 	});
 </script>

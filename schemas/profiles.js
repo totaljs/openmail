@@ -6,6 +6,7 @@ NEWSCHEMA('Profiles', function(schema) {
 	schema.define('html', String, true);
 	schema.define('icon', 'Icon');
 	schema.define('color', 'Color');
+	schema.define('model', String);
 	schema.define('smtp', String, true);
 	schema.define('smtp_options', 'JSON');
 	schema.define('helpers', String);
@@ -48,6 +49,8 @@ NEWSCHEMA('Profiles', function(schema) {
 				obj.icon = item.icon;
 				obj.color = item.color;
 				obj.reference = item.reference;
+				obj.helpers = item.helpers;
+				obj.model = item.model;
 				obj.from = item.from;
 				obj.smtp = item.smtp;
 				obj.smtp_error = item.smtp_error;
@@ -75,6 +78,7 @@ NEWSCHEMA('Profiles', function(schema) {
 				item.smtp_options = model.smtp_options;
 				item.html = model.html;
 				item.helpers = model.helpers;
+				item.model = model.model;
 				item.bcc = model.bcc;
 				item.from = model.from;
 				item.reply = model.reply;

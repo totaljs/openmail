@@ -54,6 +54,7 @@ FUNC.refresh = function() {
 		try {
 			obj.template = Tangular.compile(profile.html);
 			obj.helpers = new Function('return ' + profile.helpers)();
+			obj.model = profile.model ? new Function('return ' + profile.model)() : EMPTYOBJECT;
 		} catch (e) {}
 
 
@@ -170,11 +171,11 @@ FUNC.send = function(model, files, callback, user) {
 
 		if (html) {
 			data.body = html;
-			html = meta.tlayout(data, null, meta.helpers);
+			html = meta.tlayout(data, meta.model, meta.helpers);
 		} else {
-			html = meta.ttemplate(data, null, meta.helpers);
+			html = meta.ttemplate(data, meta.model, meta.helpers);
 			data.body = html;
-			html = meta.tlayout(data, null, meta.helpers);
+			html = meta.tlayout(data, meta.model, meta.helpers);
 		}
 
 		var arg = {};
@@ -183,8 +184,8 @@ FUNC.send = function(model, files, callback, user) {
 		arg.attachments = null;
 
 		var beg = NOW;
-		var subject = model.subject || (model.subject ? meta.tsubject(data, null, meta.helpers) : (meta.template.subject || meta.template.name));
-		var message = Mail.create(subject.indexOf('{{') === -1 ? subject : Tangular.render(subject, data, meta.helpers), html);
+		var subject = model.subject || (model.subject ? meta.tsubject(data, meta.model, meta.helpers) : (meta.template.subject || meta.template.name));
+		var message = Mail.create(subject.indexOf('{{') === -1 ? subject : Tangular.render(subject, data, meta.model, meta.helpers), html);
 
 		message.from(meta.profile.from);
 		meta.profile.reply && message.reply(meta.profile.reply);

@@ -134,7 +134,7 @@
 
 		exports.clone = function(el) {
 			var id = ATTRD(el);
-			SETTER('approve/show', '@(Are you sure you want to clone selected profile?)', '"fa fa-trash-alt" @(Remove)', function() {
+			SETTER('approve/show', '@(Are you sure you want to clone selected profile?)', '"fa fa-clone" @(Clone)', function() {
 				WAPI('profiles_clone/{0} @showloading'.format(id), ASETTER('message/response @hideloading', exports.refresh));
 			});
 		};

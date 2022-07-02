@@ -195,6 +195,19 @@
 		ROUTE('/profiles/{id}/', function(id) {
 			WAPI('profiles_read/{0}?type=basic @showloading'.format(id), function(response) {
 				BREADCRUMB.add('@(Profiles)', '../')(response.name, NAV.url);
+
+				try {
+					response.helpers = response.helpers ? new Function('return ' + response.helpers)() : EMPTYOBJECT;
+				} catch (e) {
+					response.helpers = EMPTYOBJECT;
+				}
+
+				try {
+					response.model = response.model ? new Function('return ' + response.model)() : EMPTYOBJECT;
+				} catch (e) {
+					response.model = EMPTYOBJECT;
+				}
+
 				SET('pagetemplates.layout', response);
 				SET('common.page', 'pagetemplates');
 			});

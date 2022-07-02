@@ -146,6 +146,7 @@
 			opt.items.push({ id: 'edit', name: '@(Edit)', icon: 'fas fa-pencil' });
 			opt.items.push({ id: 'html', name: '@(Edit HTML)', icon: 'fas fa-code' });
 			opt.items.push({ id: 'test', name: '@(Send a test email)', icon: 'fas fa-envelope' });
+			opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'fa fa-clone' });
 			opt.items.push('-');
 			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'fas fa-trash-alt red' });
 			opt.align = 'right';
@@ -153,6 +154,9 @@
 				switch (selected.id) {
 					case 'edit':
 						exports.edit(id);
+						break;
+					case 'clone':
+						exports.clone(id);
 						break;
 					case 'html':
 						exports.html(id);
@@ -211,6 +215,13 @@
 			});
 		};
 
+		exports.clone = function(el) {
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Are you sure you want to clone selected template?)', '"fa fa-clone" @(Clone)', function() {
+				WAPI('templates_clone/{0}/{1}'.format(NAV.params[0], id), exports.refresh);
+			});
+		};
+
 		exports.edit = function(el) {
 			var id = ATTRD(el);
 			WAPI('templates_read/{0}/{1} @showloading'.format(NAV.params[0], id), ASETTER('message/response @hideloading', function(response) {
@@ -227,14 +238,15 @@
 			WAPI('templates_read/{0}/{1} @showloading'.format(NAV.params[0], id), ASETTER('message/response', function(response) {
 
 				var item = CLONE(response);
-
 				item.callback = function(model) {
 					response.html = model.html;
 					response.model = model.model;
 					WAPI('templates_save'.format(NAV.params[0], id), response);
 				};
 
-				item.layout = model.data.layout;
+				model.data.helpers = model.layout.helpers;
+				model.data.model = model.layout.model;
+				item.layout = model.data;
 				SET('codeform @reset @hideloading', item);
 				SET('common.form', 'codeform');
 
