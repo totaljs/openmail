@@ -1,4 +1,4 @@
-<div data---="miniform__common.form__if:~PATH~;icon:fas fa-envelope;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:400" class="hidden" data-scope="~PATH~">
+<div data---="miniform__common.form__if:~PATH~;icon:fas fa-envelope;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:500" class="hidden" data-scope="~PATH~">
 	<div>
 		<div class="padding bg-smoke">
 			<div data---="input__?.name__required:1">@(Name)</div>
@@ -8,10 +8,13 @@
 		</div>
 		<div class="padding">
 			<div class="row">
-				<div class="col-md-6 m">
-					<div data---="input__?.reference__null__''">@(Reference)</div>
+				<div class="col-md-4 m">
+					<div data---="input__?.reference__align:1__''">@(Reference)</div>
 				</div>
-				<div class="col-md-6 m">
+				<div class="col-md-4 m">
+					<div data---="input__?.language__align:1;icon:fa fa-language__''">@(Language)</div>
+				</div>
+				<div class="col-md-4 m">
 					<div data---="input__?.icon__type:icon__'fas fa-envelope'">@(Icon)</div>
 				</div>
 			</div>

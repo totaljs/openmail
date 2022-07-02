@@ -1,18 +1,3 @@
-/*
-ON('request', function(req) {
-	var obj = {};
-	obj.method = req.method;
-	obj.url = req.url;
-	obj.ua = req.ua;
-	obj.date = new Date();
-	var buffer = [];
-	req.on('data', chunk => buffer.push(chunk));
-	req.on('end', function() {
-		obj.body = Buffer.concat(buffer).toString('utf8');
-		F.Fs.appendFile(PATH.logs('requests.log'), JSON.stringify(obj) + '\n', NOOP);
-	});
-});*/
-
 NEWSCHEMA('Profiles', function(schema) {
 
 	schema.define('id', UID);
@@ -142,6 +127,33 @@ NEWSCHEMA('Profiles', function(schema) {
 		if (item)
 			EXEC('+Profiles/SMTP --> test', { smtp: item.smtp, smtp_options: item.smtp_options }, $.callback, $);
 		else
+			$.invalid(404);
+	});
+
+	schema.addWorkflow('clone', function($) {
+		var id = $.id;
+		var item = MAIN.db.profiles[id];
+		if (item) {
+			item = CLONE(item);
+			item.id = UID();
+			item.name += ' (CLONED)';
+			item.reference += '_cloned';
+
+			var templates = {};
+
+			for (var key in item.templates) {
+				var template = item.templates[key];
+				template.id = UID();
+				template.profileid = item.id;
+				templates[template.id] = template;
+			}
+
+			item.templates = templates;
+			MAIN.db.profiles[item.id] = item;
+			FUNC.refresh();
+			MAIN.db.save();
+			$.success();
+		} else
 			$.invalid(404);
 	});
 

@@ -71,7 +71,7 @@
 							</div>
 							<div class="icon"><i class="{{ m.icon }}"></i></div>
 							<div class="meta">
-								<div class="name b">{{ m.name }}</div>
+								<div class="name">{{ if m.language }}<span class="badge badge-small badge-color">{{ m.language }}</span> {{ fi }}<b>{{ m.name }}</b></div>
 								<div class="reference"><i class="far fa-copy mr5"></i><span class="exec" data-exec="?/copy" data-prevent="true">{{ m.reference | empty }}</span></div>
 							</div>
 						</section>

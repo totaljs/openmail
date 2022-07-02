@@ -4,6 +4,7 @@ NEWSCHEMA('Templates', function(schema) {
 	schema.define('profileid', UID, true);
 	schema.define('icon', 'Icon');
 	schema.define('name', String, true);
+	schema.define('language', String);
 	schema.define('subject', String);
 	schema.define('reference', String);
 	schema.define('html', String);
@@ -21,9 +22,10 @@ NEWSCHEMA('Templates', function(schema) {
 				obj.profileid = item.profileid;
 				obj.icon = item.icon;
 				obj.name = item.name;
+				obj.language = item.language;
 				obj.subject = item.subject;
 				obj.color = profile.color;
-				obj.reference = (profile.reference || profile.id) + '/' + (item.reference || item.id);
+				obj.reference = (profile.reference || profile.id) + '/' + (item.reference || item.id) + (item.language ? ('/' + item.language) : '');
 				obj.dtcreated = item.dtcreated;
 				obj.dtupdated = item.dtupdated;
 				obj.sent = item.sent;
@@ -59,16 +61,17 @@ NEWSCHEMA('Templates', function(schema) {
 		}
 
 		if (model.id) {
-			delete MAIN.cache[model.id];
 			var template = profile.templates[model.id];
 			if (template) {
 				template.icon = model.icon;
 				template.name = model.name;
+				template.language = model.language;
 				template.subject = model.subject;
 				template.reference = model.reference;
 				template.html = model.html;
 				template.model = model.model;
 				template.dtupdated = NOW;
+				delete MAIN.cache[model.id];
 			} else {
 				$.invalid(404);
 				return;

@@ -14,6 +14,7 @@ exports.install = function() {
 	ROUTE('API    @setup    +profiles_save                        *Profiles        --> save');
 	ROUTE('API    @setup    -profiles_remove/{id}                 *Profiles        --> remove');
 	ROUTE('API    @setup    -profiles_test/{id}                   *Profiles        --> test');
+	ROUTE('API    @setup    -profiles_clone/{id}                  *Profiles        --> clone');
 	ROUTE('API    @setup    +smtp                                 *Profiles/SMTP   --> test');
 	ROUTE('API    @setup    -logs                                 *Logs            --> list');
 	ROUTE('API    @setup    -logs_clear                           *Logs            --> remove');

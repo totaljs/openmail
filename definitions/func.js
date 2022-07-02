@@ -59,9 +59,9 @@ FUNC.refresh = function() {
 
 		for (var key2 in profile.templates) {
 			var template = profile.templates[key2];
-			var id = key + '/' + key2;
+			var id = key + '/' + key2 + (template.language ? ('/' + template.language) : '');
 			MAIN.cache[id] = { profile: profile, template: template };
-			id = (profile.reference || profile.id) + '/' + (template.reference || profile.id);
+			id = (profile.reference || profile.id) + '/' + (template.reference || profile.id) + (template.language ? ('/' + template.language) : '');
 			try {
 				var subject = template.subject || template.name;
 				if (subject && subject.indexOf('{{') !== -1)
@@ -116,7 +116,7 @@ FUNC.send = function(model, files, callback, user) {
 	}
 
 	var raw = model;
-	model = CONVERT(model, 'id:String, to:String, subject:String, html:String, data:Object, attachments:[Object]');
+	model = CONVERT(model, 'id:String, to:String, subject:String, html:String, data:Object, attachments:[Object], language:String');
 
 	if (!model.id) {
 		callback && callback('Invalid template ID');

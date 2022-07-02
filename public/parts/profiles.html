@@ -81,6 +81,7 @@
 			opt.items.push({ id: 'edit', name: '@(Edit)', icon: 'fas fa-pencil' });
 			opt.items.push({ id: 'html', name: '@(Edit HTML layout)', icon: 'fas fa-code' });
 			opt.items.push({ id: 'test', name: '@(Test SMTP server)', icon: 'fas fa-envelope' });
+			opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'fa fa-clone' });
 			opt.items.push({ id: 'export', name: '@(Export)', icon: 'fas fa-cloud-upload' });
 			opt.items.push('-');
 			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'fas fa-trash-alt red' });
@@ -95,6 +96,9 @@
 						break;
 					case 'export':
 						exports.export(id);
+						break;
+					case 'clone':
+						exports.clone(id);
 						break;
 					case 'test':
 						exports.test(id);
@@ -126,6 +130,13 @@
 			opt.accept = 'text/plain';
 			opt.callback = ASETTER('message/response @hideloading', '@(The file has been imported successfully)', exports.refresh);
 			SETTER('fileuploader/upload @showloading', opt);
+		};
+
+		exports.clone = function(el) {
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Are you sure you want to clone selected profile?)', '"fa fa-trash-alt" @(Remove)', function() {
+				WAPI('profiles_clone/{0} @showloading'.format(id), ASETTER('message/response @hideloading', exports.refresh));
+			});
 		};
 
 		exports.edit = function(el) {
