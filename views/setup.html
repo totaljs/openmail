@@ -193,7 +193,7 @@
 		}, 'breadcrumb');
 
 		ROUTE('/profiles/{id}/', function(id) {
-			WAPI('profiles_read/{0}?type=basic @showloading'.format(id), function(response) {
+			WAPI('profiles_read/{0}?type=basic @showloading'.format(id), ERROR(function(response) {
 				BREADCRUMB.add('@(Profiles)', '../')(response.name, NAV.url);
 
 				try {
@@ -210,7 +210,9 @@
 
 				SET('pagetemplates.layout', response);
 				SET('common.page', 'pagetemplates');
-			});
+			}, function() {
+				REDIRECT('../');
+			}));
 		}, 'breadcrumb');
 
 		ROUTE('/logs/', function() {

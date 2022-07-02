@@ -97,6 +97,7 @@ function restore() {
 					if (response) {
 						var meta = response.toString('utf8').parseJSON(true);
 						MAIN.db.profiles[meta.id] = meta;
+						MAIN.db.save();
 						FUNC.refresh();
 						$.success();
 					} else

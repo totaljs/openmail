@@ -12,8 +12,15 @@ NEWSCHEMA('Templates', function(schema) {
 
 	schema.setQuery(function($) {
 
-		var arr = [];
 		var profile = MAIN.db.profiles[$.id];
+
+		if (!profile) {
+			$.invalid(404);
+			return;
+		}
+
+		var arr = [];
+
 		if (profile.templates) {
 			for (var key in profile.templates) {
 				var item = profile.templates[key];
@@ -185,7 +192,7 @@ NEWSCHEMA('Templates/Test', function(schema) {
 
 						var subject = template.subject || template.name;
 						if (subject.indexOf('{{') !== -1)
-							subject = Tangular.compile()(obj, model2, helpers);
+							subject = Tangular.compile(subject)(obj, model2, helpers);
 
 						var message = Mail.create('[TEST] ' + subject, html);
 
