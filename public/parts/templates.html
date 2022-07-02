@@ -3,7 +3,7 @@
 	.~PATH~ .items figure { width: 20%; position: relative; display: inline-block; }
 	.~PATH~ .items section { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: 10px; margin: 10px; cursor: pointer; }
 	.~PATH~ .items section:hover { background-color: #F0F0F0; }
-	.~PATH~ .items .icon { float: left; width: 18px; height: 18px; margin: 5px 0 0 5px; font-size: 18px; }
+	.~PATH~ .items .icon { float: left; width: 18px; height: 18px; margin: 5px 0 0 5px; font-size: 18px; color: #A0A0A0; }
 	.~PATH~ .items .meta { margin: 5px 0 2px 35px; line-height: 16px; position: relative; font-size: 13px; }
 	.~PATH~ .items .controls { position: absolute; right: 20px; top: 25px; cursor: pointer; z-index: 1; width: 20px; line-height: 20px; text-align: center; font-size: 16px; }
 	.~PATH~ .items .date { font-size: 11px; color: #777; }
@@ -61,21 +61,29 @@
 				</summary>
 			</div>
 
-			<div class="items" data-bind="?.data.items__template:figure">
+			<div class="items" data-bind="?.data.items__template">
 				<script type="text/html">
-					{{ foreach m in value }}
-					<figure data-id="{{ m.id }}" data-search="{{ m.name }} {{ m.reference }}">
-						<section class="exec" data-exec="?/html">
-							<div class="controls exec" data-exec="?/options" data-prevent="true">
-								<i class="fa fa-cog"></i>
+					{{ foreach g in value }}
+						<div style="padding:0 10px 5px">
+							<div class="caption">
+								<label>@(Language:) <span class="badge badge-{{ if g.empty }}red{{ else }}color{{ fi }}">{{ g.name }}</span></label>
 							</div>
-							<div class="icon"><i class="{{ m.icon }}"></i></div>
-							<div class="meta">
-								<div class="name">{{ if m.language }}<span class="badge badge-small badge-color">{{ m.language }}</span> {{ fi }}<b>{{ m.name }}</b></div>
-								<div class="reference"><i class="far fa-copy mr5"></i><span class="exec" data-exec="?/copy" data-prevent="true">{{ m.reference | empty }}</span></div>
-							</div>
-						</section>
-					</figure>
+						</div>
+						{{ foreach m in g.items }}
+						<figure data-id="{{ m.id }}" data-search="{{ m.name }} {{ m.reference }}">
+							<section class="exec" data-exec="?/html">
+								<div class="controls exec" data-exec="?/options" data-prevent="true">
+									<i class="fa fa-cog"></i>
+								</div>
+								<div class="icon"><i class="{{ m.icon }}"></i></div>
+								<div class="meta">
+									<div class="name">{{ if m.language }}<span class="badge badge-small badge-gray">{{ m.language }}</span> {{ fi }}<b>{{ m.name }}</b></div>
+									<div class="reference"><i class="far fa-copy mr5"></i><span class="exec" data-exec="?/copy" data-prevent="true">{{ m.reference | empty }}</span></div>
+								</div>
+							</section>
+						</figure>
+						{{ end }}
+						<div style="height:15px"></div>
 					{{ end }}
 				</script>
 			</div>
@@ -93,7 +101,36 @@
 		};
 
 		exports.refresh = function() {
-			WAPI('templates_list/{0} @showloading'.format(NAV.params[0]), '?.data @hideloading');
+			WAPI('templates_list/{0} @showloading'.format(NAV.params[0]), function(response) {
+
+				var groups = {};
+				for (var item of response.items) {
+
+					var language = item.language || '000 @(Without language)';
+					if (groups[language])
+						groups[language].push(item);
+					else
+						groups[language] = [item];
+				}
+
+
+				var keys = Object.keys(groups);
+				keys.quicksort();
+
+				var output = [];
+				for (var key of keys) {
+					var items = groups[key];
+					var is = false;
+					if (key.substring(0, 4) === '000 ') {
+						key = key.substring(3);
+						is = true;
+					}
+					output.push({ name: key, items: items, empty: is });
+				}
+
+				response.items = output;
+				SET('?.data @hideloading', response);
+			});
 		};
 
 		exports.create = function() {
@@ -185,7 +222,7 @@
 		exports.html = function(el) {
 
 			var id = ATTRD(el);
-			var model = GET('?');
+			var model = exports.model;
 
 			WAPI('templates_read/{0}/{1} @showloading'.format(NAV.params[0], id), ASETTER('message/response', function(response) {
 
