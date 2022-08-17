@@ -45,10 +45,21 @@
 				}
 			}
 
+			var secmodel = model.secondary || (model.layout ? model.layout.secondary : null);
+			var secondary = {};
+
+			if (secmodel) {
+				try {
+					secondary = new Function('return ' + secmodel)();
+				} catch (e) {
+					console.error(e);
+				}
+			}
+
 			if (force === true)
-				EXEC(true, 'preview/render', model.html, obj, model.layout);
+				EXEC(true, 'preview/render', model.html, obj, model.layout, secondary);
 			else
-				EXEC('common/preview', model.html, obj, model.layout);
+				EXEC('common/preview', model.html, obj, model.layout, secondary);
 		};
 
 		exports.submit = function(hide) {

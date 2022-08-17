@@ -138,12 +138,12 @@
 				REDIRECT(el.attrd('if'));
 			};
 
-			exports.preview = function(html, model, layout) {
+			exports.preview = function(html, model, layout, secondary) {
 
 				var id = 'preview';
 
 				if (common.windows.findItem('id', id)) {
-					EXEC(true, 'preview/render', html, model || {}, layout);
+					EXEC(true, 'preview/render', html, model || {}, layout, secondary);
 					SETTER('windows/toggle', id);
 					return;
 				}
@@ -159,7 +159,7 @@
 				win.make = function(el) {
 					el.aclass('noscrollbar');
 				};
-				EXEC(true, 'preview/render', html, model || {}, layout);
+				EXEC(true, 'preview/render', html, model || {}, layout, secondary);
 				PUSH('common.windows', win);
 			};
 

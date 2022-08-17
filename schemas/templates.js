@@ -168,9 +168,9 @@ NEWSCHEMA('Templates/Test', function(schema) {
 							}
 						}
 
-						if (profile.model) {
+						if (profile.secondary) {
 							try {
-								model2 = new Function('return ' + profile.model)();
+								model2 = new Function('return ' + profile.secondary)();
 							} catch (e) {
 								$.invalid('Invalid secondary model: ' + e.message);
 								return;

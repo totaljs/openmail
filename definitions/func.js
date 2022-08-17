@@ -54,7 +54,7 @@ FUNC.refresh = function() {
 		try {
 			obj.template = Tangular.compile(profile.html);
 			obj.helpers = new Function('return ' + profile.helpers)();
-			obj.model = profile.model ? new Function('return ' + profile.model)() : EMPTYOBJECT;
+			obj.secondary = profile.secondary ? new Function('return ' + profile.secondary)() : EMPTYOBJECT;
 		} catch (e) {}
 
 
@@ -171,11 +171,11 @@ FUNC.send = function(model, files, callback, user) {
 
 		if (html) {
 			data.body = html;
-			html = meta.tlayout(data, meta.model, meta.helpers);
+			html = meta.tlayout(data, meta.secondary, meta.helpers);
 		} else {
-			html = meta.ttemplate(data, meta.model, meta.helpers);
+			html = meta.ttemplate(data, meta.secondary, meta.helpers);
 			data.body = html;
-			html = meta.tlayout(data, meta.model, meta.helpers);
+			html = meta.tlayout(data, meta.secondary, meta.helpers);
 		}
 
 		var arg = {};

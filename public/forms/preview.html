@@ -6,17 +6,18 @@
 
 <script>
 	PLUGIN('preview', function(exports) {
-		exports.render = function(html, model, layout) {
+		exports.render = function(html, model, layout, secondary) {
 			try {
 
 				var template = Tangular.compile(html);
 				var islayout = layout && layout.layout;
-				var html = islayout ? template(model, layout.model, layout.helpers) : template(model);
+
+				var html = islayout ? template(model, secondary, layout.helpers) : template(model, secondary);
 
 				if (islayout) {
 					template = Tangular.compile(layout.layout);
 					model.body = html;
-					html = template(model, layout.model, layout.helpers);
+					html = template(model, secondary, layout.helpers);
 				}
 
 				SET('?.html', html);
