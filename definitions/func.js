@@ -57,7 +57,6 @@ FUNC.refresh = function() {
 			obj.secondary = profile.secondary ? new Function('return ' + profile.secondary)() : EMPTYOBJECT;
 		} catch (e) {}
 
-
 		for (var key2 in profile.templates) {
 			var template = profile.templates[key2];
 			var id = key + '/' + key2 + (template.language ? ('/' + template.language) : '');
@@ -69,7 +68,7 @@ FUNC.refresh = function() {
 					subject = Tangular.compile(subject);
 				else
 					subject = null;
-				MAIN.cache[id] = { profile: profile, template: template, tlayout: obj.template, tsubject: subject, ttemplate: Tangular.compile(template.html), helpers: obj.helpers, smtp_options: profile.smtp_options ? profile.smtp_options.parseJSON(true) : {} };
+				MAIN.cache[id] = { profile: profile, template: template, tlayout: obj.template, tsubject: subject, ttemplate: Tangular.compile(template.html), helpers: obj.helpers, secondary: obj.secondary, smtp_options: profile.smtp_options ? profile.smtp_options.parseJSON(true) : {} };
 			} catch (e) {}
 		}
 	}
@@ -184,8 +183,8 @@ FUNC.send = function(model, files, callback, user) {
 		arg.attachments = null;
 
 		var beg = NOW;
-		var subject = model.subject || (model.subject ? meta.tsubject(data, meta.model, meta.helpers) : (meta.template.subject || meta.template.name));
-		var message = Mail.create(subject.indexOf('{{') === -1 ? subject : Tangular.render(subject, data, meta.model, meta.helpers), html);
+		var subject = model.subject || (model.subject ? meta.tsubject(data, meta.secondary, meta.helpers) : (meta.template.subject || meta.template.name));
+		var message = Mail.create(subject.indexOf('{{') === -1 ? subject : Tangular.render(subject, data, meta.secondary, meta.helpers), html);
 
 		message.from(meta.profile.from);
 		meta.profile.reply && message.reply(meta.profile.reply);
