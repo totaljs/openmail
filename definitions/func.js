@@ -187,7 +187,13 @@ FUNC.send = function(model, files, callback, user) {
 		var message = Mail.create(subject.indexOf('{{') === -1 ? subject : Tangular.render(subject, data, meta.secondary, meta.helpers), html);
 
 		message.from(meta.profile.from);
-		meta.profile.reply && message.reply(meta.profile.reply);
+
+		if (meta.profile.reply)
+			message.reply(meta.profile.reply);
+
+		if (model.reply)
+			message.reply(meta.profile.reply);
+
 		meta.profile.bcc && message.bcc(meta.profile.bcc);
 		message.to(model.to);
 
