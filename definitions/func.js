@@ -116,7 +116,7 @@ FUNC.send = function(model, files, callback, user) {
 	}
 
 	var raw = model;
-	model = CONVERT(model, 'id:String, to:String, subject:String, html:String, data:Object, attachments:[Object], language:String');
+	model = CONVERT(model, 'id:String, to:String, reply:string, cc:string, bcc:string, subject:String, html:String, data:Object, attachments:[Object], language:String');
 
 	if (!model.id) {
 		callback && callback('Invalid template ID');
@@ -191,10 +191,18 @@ FUNC.send = function(model, files, callback, user) {
 		if (meta.profile.reply)
 			message.reply(meta.profile.reply);
 
+		if (meta.profile.bcc)
+			message.bcc(meta.profile.bcc);
+
 		if (model.reply)
 			message.reply(model.reply);
 
-		meta.profile.bcc && message.bcc(meta.profile.bcc);
+		if (model.cc)
+			message.cc(model.cc);
+
+		if (model.bcc)
+			message.bcc(model.bcc);
+
 		message.to(model.to);
 
 		if (files && files.length) {
