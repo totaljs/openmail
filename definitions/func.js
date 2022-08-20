@@ -192,7 +192,7 @@ FUNC.send = function(model, files, callback, user) {
 			message.reply(meta.profile.reply);
 
 		if (model.reply)
-			message.reply(meta.profile.reply);
+			message.reply(model.reply);
 
 		meta.profile.bcc && message.bcc(meta.profile.bcc);
 		message.to(model.to);
