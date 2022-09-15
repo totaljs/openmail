@@ -61,7 +61,7 @@ FUNC.refresh = function() {
 			var template = profile.templates[key2];
 			var id = key + '/' + key2 + (template.language ? ('/' + template.language) : '');
 			MAIN.cache[id] = { profile: profile, template: template };
-			id = (profile.reference || profile.id) + '/' + (template.reference || profile.id) + (template.language ? ('/' + template.language) : '');
+			id = (profile.reference || profile.id) + '/' + (template.reference || template.id) + (template.language ? ('/' + template.language) : '');
 			try {
 				var subject = template.subject || template.name;
 				if (subject && subject.indexOf('{{') !== -1)
