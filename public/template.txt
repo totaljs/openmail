@@ -1,0 +1,19 @@
+<div>
+	Hello {{ value.name | uppercase }}!
+</div>
+
+<script type="text/json">
+	{
+		"name": "Total.js OpenMail"
+	}
+</script>
+
+<script>
+
+	// Custom helpers
+
+	Thelpers.uppercase = function(val) {
+		return val ? val.toUpperCase() : '';
+	};
+
+</script>

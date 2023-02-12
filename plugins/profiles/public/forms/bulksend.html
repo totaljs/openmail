@@ -1,0 +1,34 @@
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-envelope;title:@(Bulk send email);autofocus:true;scrollbar:1;submit:?/submit;width:800" class="hidden ~PATH~" plugin="~PATH~">
+	<div class="padding bg-smoke">
+		<ui-component name="input" path="?.email" config="required:1;type:multiline;height:200;monospace:1">@(E-mail addresses)</ui-component>
+		<div class="help">@(E-mail addresses can be separated by a comma or a new line.)</div>
+	</div>
+	<div class="padding">
+		<ui-component name="input" path="?.model" config="required:1;type:multiline;height:200;monospace:1">@(Model)</ui-component>
+		<div class="help">@(Model must contain a valid JSON format)</div>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SEND)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+		exports.submit = function(hide) {
+			var model = exports.form;
+			var data = {};
+			data.email = model.email;
+			data.model = model.model;
+			exports.tapi('templates_bulksend/{profileid}/{id} ERROR'.arg(model), model, function() {
+				hide();
+				SETTER('message/success', '@(The email has been queued for sending.)');
+			});
+		};
+
+	});
+
+</script>

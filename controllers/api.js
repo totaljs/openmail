@@ -1,52 +1,22 @@
 exports.install = function() {
 
-	ROUTE('+SOCKET  /', socket, 1024);
 	ROUTE('+POST    /', http, [60 * 5000], 1024); // 5 min. timeout + 1024 kB data
-	ROUTE('+POST    /', http, ['upload', 60 * 5000], 1024 * 50); // 5 min. timeout + 50 MB
+	ROUTE('+POST    /', http, ['upload', 60 * 5000], 1024); // 5 min. timeout + 1024 kB data
+	ROUTE('+POST    /api/upload/', upload, 1024);
 
 	// Index
 	ROUTE('GET /', index);
+	ROUTE('FILE /download/*.*', download);
 };
 
+
 function index() {
-	if (PREF.token)
-		this.plain(MAIN.name + ' v' + MAIN.version);
+	if (CONF.token)
+		this.plain(CONF.name);
 	else
 		this.redirect('/setup/');
 }
 
-function socket() {
-
-	var self = this;
-
-	MAIN.socket = self;
-
-	self.sendmeta = function(client) {
-		var msg = { type: 'init', name: PREF.name, version: MAIN.version, id: MAIN.name };
-		if (client)
-			client.send(msg);
-		else
-			self.send(msg);
-	};
-
-	self.on('open', function(client) {
-		client.dtconnected = new Date();
-		self.sendmeta(client);
-	});
-
-	self.on('message', function(client, msg) {
-
-		if (PREF.log_requests)
-			FUNC.audit(client, msg);
-
-		if (msg.type === 'send' && msg.to) {
-			FUNC.send(msg, null, function(err, response) {
-				msg.callbackid && client.send({ callbackid: msg.callbackid, error: err, success: err == null, response: response });
-			}, client.user);
-		}
-
-	});
-}
 
 function http() {
 
@@ -59,8 +29,40 @@ function http() {
 	if (typeof(payload.attachments) === 'string' && payload.attachments.isJSON())
 		payload.attachments = payload.attachments.parseJSON(true);
 
-	if (PREF.log_requests)
-		FUNC.audit($, payload);
+	if (payload.to && payload.to.indexOf(',') !== -1) {
 
-	FUNC.send(payload, $.files, $.done(), $.user);
+		var email = payload.to.split(',');
+
+		email.wait(function(m, next) {
+			var item = CLONE(payload);
+			item.to = m.trim();
+			FUNC.send(item);
+			setTimeout(next, 10);
+		});
+
+		$.success();
+
+	} else
+		FUNC.send(payload, $);
+}
+
+function upload() {
+
+	var $ = this;
+	var file = $.files[0];
+
+	if (file) {
+		file.fs('files', UID(), $.successful(function(response) {
+			response.url = $.hostname('/download/{id}.{ext}'.args(response));
+			$.json(response);
+		}));
+	} else
+		$.json(null);
+
+}
+
+function download(req, res) {
+	var filename = req.split[1];
+	var index = filename.lastIndexOf('.');
+	res.filefs('files', filename.substring(0, index), !!req.query.download);
 }

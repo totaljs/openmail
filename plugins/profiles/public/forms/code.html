@@ -1,0 +1,117 @@
+<ui-component name="box" path="common.form" config="if:~PATH~;title:@(Update template);icon:ti ti-html5 orange;reload:?/reload;submit:?/submit;scrollbar:0;width:5120" class="hidden ~PATH~" plugin="~PATH~">
+	<nav>
+		<button class="exec" data-exec="?/test"><i class="ti ti-envelope"></i>@(Send test)</button>
+	</nav>
+	<div>
+		<ui-component name="columns" path="null" config="parent:.ui-box-body" class="hidden invisible">
+			<section data-size="50%">
+				<ui-component name="cloudeditorsimple" path="?.html" config="realtime:1;parent:parent;margin:0;contextmenu:?/contextmenu;$assign:EDITOR"></ui-component>
+			</section>
+			<section>
+				<ui-component name="viewbox" path="common.form" config="parent:auto" class="invisible">
+					<ui-component name="iframepreview" path="?.preview"></ui-component>
+				</ui-component>
+			</section>
+		</ui-component>
+	</div>
+	<nav>
+		<button name="submit"><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var layout = null;
+		var islayout = false;
+		var error = '<code style="padding:20px;display:block;line-height:20px;font-size:14px;font-family:Menlo,Consolas,monospace">@(Unhandled error:) {0}</code>';
+
+		var preview = function(value, preview) {
+
+			var html = '';
+
+			if (value) {
+				var template = FUNC.parsetemplate(value);
+
+				if (template.error)
+					return error.format(template.error);
+
+				var second = layout ? layout.model : { preview: preview };
+
+				if (layout && layout.helpers) {
+					for (var key in layout.helpers)
+						template.helpers[key] = layout.helpers[key];
+				}
+
+				html = template.template({ value: islayout ? '' : template.model }, second, template.helpers);
+			}
+
+			if (layout) {
+				if (layout.model)
+					layout.model = {};
+				layout.model.preview = preview;
+				html = layout.template({ value: html }, layout.model, layout.helpers);
+			}
+
+			return html;
+		};
+
+		exports.reload = function() {
+			var model = exports.model;
+			layout = model.layout ? FUNC.parsetemplate(model.layout) : null;
+			islayout = model.islayout;
+			exports.set('preview', preview(model.html, true));
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.model;
+			hide();
+			setTimeout(() => model.callback(model.html), 500);
+		};
+
+		exports.test = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.align = 'right';
+			opt.element = el;
+			opt.offsetY = 35;
+			opt.offsetX = 20;
+			opt.icon = 'ti ti-envelope';
+			opt.offsetWidth = 150;
+			opt.value = CACHE('testemail') || '@';
+			opt.placeholder = '@(Enter your email address)';
+			opt.callback = function(value) {
+				CACHE('testemail', value, '1 year');
+				exports.tapi('templates_test/{0} ERROR'.format(model.id), { email: value, html: preview(model.html, false) }, ASETTER('notify/success', '@(Test email has been sent successfully.)'));
+			};
+			SETTER('floatinginput/show', opt);
+		};
+
+		exports.contextmenu = function(e) {
+			var opt = {};
+			opt.x = e.x;
+			opt.y = e.y;
+			opt.items = [];
+			opt.items.push({ id: 'upload', name: '@(Upload file)', icon: 'ti ti-cloud-upload' });
+			opt.callback = function(sel) {
+				if (sel.id === 'upload') {
+					var opt = {};
+					opt.multiple = false;
+					opt.url = QUERIFY('@{#}/api/upload/', common.api);
+					opt.callback = response => EDITOR.replaceselection(response.url);
+					SETTER('fileuploader/upload', opt);
+				}
+			};
+			SETTER('menu/show', opt);
+		};
+
+		exports.watch('html', function(value, path, type) {
+			if (type !== 'load')
+				exports.set('preview', preview(value, true));
+		});
+
+	});
+
+</script>

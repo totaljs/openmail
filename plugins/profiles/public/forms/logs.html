@@ -1,0 +1,50 @@
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-history;title:@(Logs);autofocus:true;reload:?/reload;closeesc:1;scrollbar:0;submit:?/submit;width:1500" class="hidden ~PATH~" plugin="~PATH~">
+	<div style="border-bottom:1px solid #E0E0E0">
+		<ui-component name="datagrid" path="?.grid" config="exec:?/filter;height:.ui-box-body;noborder:1;margin:1">
+			<script type="text/html">
+				[
+					'{{ if error }} red{{ fi }}',
+					{ name: 'id', text: '@(ID)', hide: true },
+					{ name: 'profile', text: '@(Profile)', width: 180 },
+					{ name: 'template', text: '@(Template)', width: 180 },
+					{ name: 'to', text: '@(Email)', width: 250 },
+					{ name: 'subject', text: '@(Subject)', width: 250 },
+					{ name: 'error', text: '@(Error)', width: 220, class: 'b' },
+					{ name: 'duration', text: '@(Duration)', align: 2, width: 100, template: '{{ duration | duration }}' },
+					{ name: 'dtcreated', text: '@(Created)', format: '[ts]', type: 'date', width: 150 }
+				]
+			</script>
+		</ui-component>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	Thelpers.duration = function(val) {
+		return val ? ((val / 1000).floor(2) + ' @(sec.)') : DEF.empty;
+	};
+
+	PLUGIN(function(exports) {
+
+		exports.reload = function(com) {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.nul('grid');
+		};
+
+		exports.filter = function(type, filter, sort, page) {
+			if (!filter)
+				filter = {};
+			filter.sort = sort;
+			filter.page = page;
+			exports.tapi(QUERIFY('profiles_logs', filter) + ' ERROR', 'grid');
+		};
+
+	});
+
+</script>
