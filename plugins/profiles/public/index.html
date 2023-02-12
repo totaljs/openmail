@@ -19,51 +19,45 @@
 	</header>
 
 	<ui-component name="viewbox" config="parent:auto;margin:60" class="invisible">
-		<div>
+		<ui-component name="empty" path="?.items" config="parent:auto">
+
+			<script type="text/html">
+				<div>@(The profile doesn't contain any profiles)</div>
+				<div class="mt5">
+					<span class="link exec" data-exec="?/create"><i class="ti ti-plus-circle green mr5"></i>@(Create first)</span>
+				</div>
+			</script>
+
 			<div class="padding">
-
-				<ui-component name="empty" path="?.items" config="parent:auto">
-
-					<script type="text/html">
-						<div>@(The profile doesn't contain any profiles)</div>
-						<div class="mt5">
-							<span class="link exec" data-exec="?/create"><i class="ti ti-plus-circle green mr5"></i>@(Create first)</span>
-						</div>
-					</script>
-
-					<div>
-						<div class="m">
-							<div style="max-width:250px;width:100%">
-								<ui-component name="searchinput" path="?.search" config="autofocus:1;placeholder:@(Search)"></ui-component>
-							</div>
-						</div>
-						<div style="height:5px"></div>
-						<ui-component name="search" path="?.search" config="selector:figure;datasource:?.list">
-							<ui-bind path="?.items" config="template:figure" class="grid-4 grid-sm-2 grid-xs-1 listing2">
-								<script type="text/html">
-									{{ foreach m in value }}
-										<figure class="exec" data-exec="?/detail" data-id="{{ m.id }}" data-search="{{ m.name }}">
-											<section>
-												<div class="pull-right controls">
-													<span class="exec" data-exec="?/options" data-prevent="true"><i class="ti ti-cog"></i></span>
-												</div>
-												<div class="icon">
-													<i class="{{ m.icon }}" style="color:{{ m.color }}"></i>
-												</div>
-												<div>{{ m.name }}</div>
-												<div class="fs12 gray">{{ if m.dtsent }}<span class="pull-right mr10">{{ m.dtsent | time2 }}</span>{{ fi }}@(Used:) <b>{{ m.count | empty('0') }}x</b></div>
-											</section>
-										</figure>
-									{{ end }}
-								</script>
-							</ui-bind>
-						</ui-component>
+				<div class="m">
+					<div style="max-width:250px;width:100%">
+						<ui-component name="searchinput" path="?.search" config="autofocus:1;placeholder:@(Search)"></ui-component>
 					</div>
-
+				</div>
+				<div style="height:5px"></div>
+				<ui-component name="search" path="?.search" config="selector:figure;datasource:?.list">
+					<ui-bind path="?.items" config="template:figure" class="grid-4 grid-sm-2 grid-xs-1 listing2">
+						<script type="text/html">
+							{{ foreach m in value }}
+								<figure class="exec" data-exec="?/detail" data-id="{{ m.id }}" data-search="{{ m.name }}">
+									<section>
+										<div class="pull-right controls">
+											<span class="exec" data-exec="?/options" data-prevent="true"><i class="ti ti-cog"></i></span>
+										</div>
+										<div class="icon">
+											<i class="{{ m.icon }}" style="color:{{ m.color }}"></i>
+										</div>
+										<div>{{ m.name }}</div>
+										<div class="fs12 gray">{{ if m.dtsent }}<span class="pull-right mr10">{{ m.dtsent | time2 }}</span>{{ fi }}@(Used:) <b>{{ m.count | empty('0') }}x</b></div>
+									</section>
+								</figure>
+							{{ end }}
+						</script>
+					</ui-bind>
 				</ui-component>
 			</div>
-		</div>
 
+		</ui-component>
 	</ui-component>
 
 </ui-plugin>

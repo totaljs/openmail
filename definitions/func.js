@@ -156,14 +156,6 @@ FUNC.send = function(data, $) {
 		$.invalid('Template not found');
 };
 
-FUNC.audit = function(client, msg) {
-	msg.token = client.user.token;
-	msg.ua = client.ua;
-	msg.ip = client.ip;
-	msg.dtcreated = new Date();
-	F.Fs.appendFile(PATH.databases('audit.log'), JSON.stringify(msg) + '\n', NOOP);
-};
-
 FUNC.parsetemplate = function(body) {
 
 	var helpers = {};
