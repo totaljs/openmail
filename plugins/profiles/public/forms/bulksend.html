@@ -23,7 +23,7 @@
 			var data = {};
 			data.email = model.email;
 			data.model = model.model;
-			exports.tapi('templates_bulksend/{profileid}/{id} ERROR'.arg(model), model, function() {
+			exports.tapi('templates_bulksend/{profileid}/{id} ERROR'.arg(model), data, function() {
 				hide();
 				SETTER('message/success', '@(The email has been queued for sending.)');
 			});
