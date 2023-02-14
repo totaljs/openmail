@@ -20,7 +20,7 @@ if (!config.cdn)
 // Fixed settings
 CONF.allow_custom_titles = true;
 CONF.version = '1';
-CONF.op_icon = 'ti ti-invoice';
+CONF.op_icon = 'ti ti-envelope';
 CONF.op_path = '/setup/';
 
 // Loads configuration
