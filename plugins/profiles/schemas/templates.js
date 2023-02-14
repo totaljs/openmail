@@ -252,7 +252,7 @@ NEWSCHEMA('Templates', function(schema) {
 				if (db.mail_smtp) {
 					var mail = Mail.create(CONF.name + ': Test', model.html);
 					var opt = db.mail_smtp_options ? db.mail_smtp_options.parseJSON() : null;
-					mail.from(db.sender);
+					mail.from(db.from);
 					mail.to(model.email);
 					db.reply && mail.reply(db.reply);
 					mail.send(db.mail_smtp, opt, $.done());
