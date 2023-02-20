@@ -114,12 +114,12 @@ FUNC.send = function(data, $) {
 		arg.mail.to(model.to);
 		arg.mail.from(meta.profile.from || meta.profile.sender);
 
-		var reply = data.reply || meta.profile.reply;
+		var reply = model.reply || meta.profile.reply;
 		reply && arg.mail.reply(reply);
 
-		data.cc && arg.mail.cc(data.cc);
+		model.cc && arg.mail.cc(model.cc);
 
-		var bcc = data.bcc || meta.profile.bcc;
+		var bcc = model.bcc || meta.profile.bcc;
 		bcc && arg.mail.bcc(bcc);
 
 		if ($ && $.files && $.files.length) {
