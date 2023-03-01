@@ -22,10 +22,9 @@ NEWSCHEMA('Tokens', function(schema) {
 		}
 	});
 
-
 	schema.action('create', {
 		name: 'Create token',
-		input: '*name, *token',
+		input: '*name, *token, profiles:Boolean',
 		permissions: 'tokens',
 		action: function($, model) {
 			model.id = UID();
@@ -37,10 +36,12 @@ NEWSCHEMA('Tokens', function(schema) {
 
 	schema.action('update', {
 		name: 'Update token',
-		input: '*name, *token',
+		input: '*name, *token, profiles:Boolean',
 		params: '*id:UID',
 		permissions: 'tokens',
 		action: function($, model) {
+
+			console.log(model);
 
 			var params = $.params;
 			var db = MAIN.db.tokens;
