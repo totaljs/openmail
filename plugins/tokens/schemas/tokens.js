@@ -41,8 +41,6 @@ NEWSCHEMA('Tokens', function(schema) {
 		permissions: 'tokens',
 		action: function($, model) {
 
-			console.log(model);
-
 			var params = $.params;
 			var db = MAIN.db.tokens;
 			var index = db.findIndex('id', params.id);
