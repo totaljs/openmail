@@ -34,7 +34,12 @@
 		};
 
 		exports.submit = function(hide) {
+
 			var model = exports.form;
+
+			if (!model.group)
+				model.group = '';
+
 			exports.tapi('templates_{0} ERROR'.format(model.id ? ('update/{0}/{1}'.format(NAV.params[0], model.id)) : ('create/{0}'.format(NAV.params[0]))), model, function() {
 				NAV.refresh();
 				hide();
