@@ -30,7 +30,7 @@ FUNC.refresh = function() {
 	}
 };
 
-var Sender = '*id:String, *to:String, reply:Email, cc:Email, bcc:Email, data:Object, attachments:[*name:String, *url:String]'.toJSONSchema();
+var Sender = '*id:String, *to:String, reply:Email, cc:Email, bcc:Email, subject:String, data:Object, attachments:[*name:String, *url:String]'.toJSONSchema();
 
 function sendmail($, arg) {
 	TRANSFORM('render', arg, function() {
@@ -62,9 +62,9 @@ function sendmail($, arg) {
 	});
 }
 
-FUNC.send = function(data, $) {
+FUNC.send = function(input, $) {
 
-	var schema = Sender.transform(data);
+	var schema = Sender.transform(input);
 	if (schema.error) {
 		$ && $.invalid(schema.error);
 		return;
@@ -97,12 +97,12 @@ FUNC.send = function(data, $) {
 		var html = meta.ttemplate.template({ value: data }, meta.tlayout.model, meta.ttemplate.helpers);
 		html = meta.tlayout.template({ value: html }, meta.tlayout.model, meta.tlayout.helpers);
 
-		var subject;
+		var subject = '';
 
-		if (meta.tsubject)
+		if (model.subject)
+			subject = model.subject;
+		else if (meta.tsubject)
 			subject = meta.tsubject({ value: data }, meta.tlayout.model, meta.ttemplate.helpers);
-		else
-			subject = meta.subject;
 
 		var arg = {};
 
