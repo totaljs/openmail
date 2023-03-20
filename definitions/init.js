@@ -30,7 +30,7 @@ LOADCONFIG(db.config);
 MAIN.cache = {};
 
 // UI components
-COMPONENTATOR('ui', 'exec,locale,aselected,page,viewbox,input,importer,box,cloudeditorsimple,validate,loading,intranetcss,notify,message,errorhandler,empty,menu,colorpicker,icons,miniform,clipboard,approve,columns,iframepreview,search,searchinput,fileuploader,formdata,filesaver,filereader,ready,floatinginput,datagrid', true);
+COMPONENTATOR('ui', 'exec,directory,locale,aselected,page,viewbox,input,importer,box,cloudeditorsimple,validate,loading,intranetcss,notify,message,errorhandler,empty,menu,colorpicker,icons,miniform,clipboard,approve,columns,iframepreview,search,searchinput,fileuploader,formdata,filesaver,filereader,ready,floatinginput,datagrid', true);
 
 // Permissions
 ON('ready', function() {
