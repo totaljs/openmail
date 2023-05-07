@@ -39,10 +39,10 @@ function sendmail($, arg) {
 		arg.model.templateid = arg.meta.template.id;
 		arg.model.dtcreated = NOW = new Date();
 
-		if (arg.attachments && arg.attachments.length)
-			PATH.unlink(arg.attachments);
-
 		arg.mail.send(arg.meta.smtp, arg.meta.smtp_options, function(err) {
+
+			if (arg.attachments && arg.attachments.length)
+				PATH.unlink(arg.attachments);
 
 			arg.model.profile = arg.meta.profile.name;
 			arg.model.template = arg.meta.template.name;
@@ -52,6 +52,7 @@ function sendmail($, arg) {
 			arg.model.duration = Date.now() - arg.model.dtcreated.getTime();
 
 			DB().insert('nosql/logs', arg.model);
+
 			if ($) {
 				if (err)
 					$.invalid(err);
