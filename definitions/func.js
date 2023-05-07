@@ -104,6 +104,8 @@ FUNC.send = function(input, $) {
 			subject = model.subject;
 		else if (meta.tsubject)
 			subject = meta.tsubject({ value: data }, meta.tlayout.model, meta.ttemplate.helpers);
+		else if (meta.subject)
+			subject = meta.subject;
 
 		var arg = {};
 
