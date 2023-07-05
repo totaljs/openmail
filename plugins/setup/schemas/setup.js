@@ -20,6 +20,7 @@ NEWSCHEMA('Setup', function(schema) {
 
 	schema.action('read', {
 		name: 'Read configuration',
+		permissions: 'setup',
 		action: function($) {
 			$.callback(MAIN.db.config);
 		}
