@@ -34,7 +34,7 @@ Data.auth = function($) {
 	}
 
 	var q = $.query;
-	var a = q.openplatform || '';
+	var a = q.openplatform || $.cookie(CONF.op_cookie);
 
 	if (!a) {
 		$.invalid();

@@ -36,7 +36,7 @@
 
 	<ui-component name="ready" class="invisible">
 		<div class="appmenu">
-			<span class="mainmenu exec" data-href="/"><i class="ti ti-menu"></i></span>
+			<span class="mainmenu exec" data-href="/setup/"><i class="ti ti-menu"></i></span>
 			<ui-component name="viewbox" config="parent:window;margin:44" class="invisible" style="border-top:1px solid #E0E0E0">
 				<ui-component name="aselected" path="NAV.url">
 					<ui-bind path="common.plugins" config="template">
@@ -88,7 +88,9 @@
 		common.name = '@{CONF.name}';
 		common.api = { openplatform: NAV.query.openplatform, token: NAV.query.token };
 
-		NAV.custom(true);
+		if (W.top !== W && common.openplatform)
+			NAV.custom();
+
 		NAV.clientside('.jR');
 
 		MIDDLEWARE('init', function(next) {
@@ -114,7 +116,7 @@
 
 		});
 
-		ROUTE('/', function() {
+		ROUTE('/setup/', function() {
 			SET('common.page', 'welcome');
 		});
 
