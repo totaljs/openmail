@@ -88,7 +88,7 @@
 		common.name = '@{CONF.name}';
 		common.api = { openplatform: NAV.query.openplatform, token: NAV.query.token };
 
-		if (W.top !== W && common.openplatform)
+		if (W.top !== W && common.openplatform && !NAV.query.token)
 			NAV.custom();
 
 		NAV.clientside('.jR');
